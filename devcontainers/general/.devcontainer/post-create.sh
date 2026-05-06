@@ -21,11 +21,9 @@ fi
 # Run gh auth setup-git manually after first open if HTTPS auth is needed.
 
 # ── Shell comfort ─────────────────────────────────────────────────────────────
-MARKER="# dev-infra bashrc"
-if [[ -f "$INFRA_DIR/wsl/shell/bashrc.append" ]] && ! grep -qF "$MARKER" "$HOME/.bashrc"; then
-  echo "" >> "$HOME/.bashrc"
-  echo "$MARKER" >> "$HOME/.bashrc"
-  cat "$INFRA_DIR/wsl/shell/bashrc.append" >> "$HOME/.bashrc"
+SOURCE_LINE="source \"$INFRA_DIR/wsl/shell/bashrc.sh\""
+if [[ -f "$INFRA_DIR/wsl/shell/bashrc.sh" ]] && ! grep -qF "$SOURCE_LINE" "$HOME/.bashrc"; then
+  printf '\n%s\n' "$SOURCE_LINE" >> "$HOME/.bashrc"
 fi
 
 echo ""

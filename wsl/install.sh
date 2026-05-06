@@ -18,13 +18,12 @@ if getent group docker &>/dev/null && ! id -nG "$USER" | grep -qw docker; then
   echo "    NOTE: log out and back in (or run 'newgrp docker') for this to take effect"
 fi
 
-# Append shell config if not already present
-MARKER="# dev-infra bashrc"
-if ! grep -qF "$MARKER" "$HOME/.bashrc"; then
-  echo "==> Appending shell config to ~/.bashrc"
-  echo "" >> "$HOME/.bashrc"
-  echo "$MARKER" >> "$HOME/.bashrc"
-  cat "$SCRIPT_DIR/shell/bashrc.append" >> "$HOME/.bashrc"
+# Wire shell config via a single source line — changes to bashrc.sh take effect
+# on the next shell open with no further edits to ~/.bashrc needed.
+SOURCE_LINE="source \"$SCRIPT_DIR/shell/bashrc.sh\""
+if ! grep -qF "$SOURCE_LINE" "$HOME/.bashrc"; then
+  echo "==> Adding source line to ~/.bashrc"
+  printf '\n%s\n' "$SOURCE_LINE" >> "$HOME/.bashrc"
 fi
 
 echo ""

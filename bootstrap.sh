@@ -4,7 +4,7 @@
 # then hands off to wsl/install.sh for the full baseline.
 set -euo pipefail
 
-INFRA_REPO="${INFRA_REPO:-niklas-skoglund/dev-infra}"
+INFRA_REPO="${INFRA_REPO:-SkogisStrana/dev-infra}"
 INFRA_DIR="${INFRA_DIR:-$HOME/dev-infra}"
 
 echo "==> Updating apt and installing bootstrap dependencies"

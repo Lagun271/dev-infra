@@ -19,7 +19,7 @@ From an elevated PowerShell prompt on the Windows host:
 wsl --install -d Ubuntu-24.04
 
 # Inside WSL, run the public bootstrap
-curl -fsSL https://raw.githubusercontent.com/<user>/dev-infra/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/SkogisStrana/dev-infra/main/bootstrap.sh | bash
 ```
 
 The bootstrap installs the minimum tools to authenticate and clone this repo, then hands off to `wsl/install.sh`.

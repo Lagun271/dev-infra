@@ -30,3 +30,8 @@ fi
 if command -v gh &>/dev/null; then
   eval "$(gh completion -s bash 2>/dev/null || true)"
 fi
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ]          && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"

@@ -18,6 +18,12 @@ if getent group docker &>/dev/null && ! id -nG "$USER" | grep -qw docker; then
   echo "    NOTE: log out and back in (or run 'newgrp docker') for this to take effect"
 fi
 
+# Install nvm if not present
+if [[ ! -s "$HOME/.nvm/nvm.sh" ]]; then
+  echo "==> Installing nvm"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+fi
+
 # Wire shell config via a single source line — changes to bashrc.sh take effect
 # on the next shell open with no further edits to ~/.bashrc needed.
 SOURCE_LINE="source \"$SCRIPT_DIR/shell/bashrc.sh\""

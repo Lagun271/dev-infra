@@ -1,0 +1,4 @@
+# Force LF line endings for scripts and text files — required for bash in WSL/Linux
+* text=auto eol=lf
+
+# Windows-only files can use CRLF if needed (none currently)

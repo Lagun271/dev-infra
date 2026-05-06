@@ -1,0 +1,44 @@
+{
+  "name": "general",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+
+  // Mount the Docker socket so container-in-container and compose work
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  // Forward common dev ports
+  "forwardPorts": [3000, 5000, 8000, 8080],
+
+  // VS Code extensions installed into the container
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-dotnettools.csdevkit",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "editor.rulers": [100]
+      }
+    }
+  },
+
+  "postCreateCommand": "bash /workspaces/.devcontainer/post-create.sh",
+
+  // Run as non-root
+  "remoteUser": "dev"
+}

@@ -1,0 +1,17 @@
+# WSL host apt packages — keep this list minimal.
+# Development tooling belongs in the devcontainer, not here.
+# Lines starting with # are ignored by install.sh.
+
+# GitHub auth and repo access
+gh
+
+# Core utilities
+curl
+gnupg
+jq
+wget
+
+# Docker access (socket passthrough from Docker Desktop or native dockerd)
+docker-buildx
+docker-compose-v2
+docker.io

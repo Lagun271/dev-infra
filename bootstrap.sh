@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Public bootstrap — safe to curl | bash from a fresh WSL distro.
-# Installs only what is needed to authenticate and clone the private infra repo,
+# Installs only what is needed to authenticate and clone this repo,
 # then hands off to wsl/install.sh for the full baseline.
 set -euo pipefail
 

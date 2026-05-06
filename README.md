@@ -1,40 +1,66 @@
 # dev-infra
 
-Development environment definitions for WSL baseline and devcontainers.
+Personal development environment definitions for Windows + WSL 2 + devcontainers. The goal is a reproducible setup where a new machine can be brought to a working state with a single command, and where every durable change is committed here rather than living only on the host.
 
-## Model
+## Layer model
 
-| Layer | Contents |
+| Layer | Responsibility |
 |---|---|
 | Windows host | RobotStudio, GUI apps, Docker Desktop |
 | WSL host | Git, GitHub CLI, Docker socket access, minimal shell |
 | Devcontainer | All development tooling, CLIs, coding agents |
 
-## Fresh WSL Setup
+Keeping the WSL host minimal means the container carries everything needed for development and can be rebuilt cleanly at any time.
 
-From an elevated PowerShell prompt on the Windows host:
+## Fresh WSL setup
+
+From PowerShell on the Windows host:
 
 ```powershell
-# Install a fresh Ubuntu distro if needed
 wsl --install -d Ubuntu-24.04
+```
 
-# Inside WSL, run the public bootstrap
+Then inside WSL:
+
+```bash
 curl -fsSL https://raw.githubusercontent.com/SkogisStrana/dev-infra/main/bootstrap.sh | bash
 ```
 
-The bootstrap installs the minimum tools to authenticate and clone this repo, then hands off to `wsl/install.sh`.
+The bootstrap installs `gh`, authenticates with GitHub, clones this repo, then runs `wsl/install.sh` to apply the full baseline.
 
-## Working Rule
+## Repo structure
+
+```
+bootstrap.sh                        # curl-pipeable entry point for a fresh distro
+wsl/
+  apt.txt                           # WSL host packages
+  install.sh                        # idempotent baseline installer
+  shell/bashrc.sh                   # shell config sourced by ~/.bashrc
+  README.md                         # Docker socket setup, credential helpers
+devcontainers/
+  general/                          # one general-purpose devcontainer for all projects
+    .devcontainer/
+      devcontainer.json
+      Dockerfile
+      post-create.sh
+packages/
+  npm-global.txt                    # global npm tools installed in the container
+scripts/
+  check-tools.sh                    # verify expected tools are present
+  check-network.sh                  # verify DNS, HTTPS, and Docker socket
+```
+
+## Working rule
 
 Manual installs are fine for experiments. Durable changes belong in this repo:
 
 | What | Where |
 |---|---|
 | WSL apt package | `wsl/apt.txt` |
-| WSL shell setup | `wsl/shell/bashrc.append` |
+| WSL shell config | `wsl/shell/bashrc.sh` |
 | WSL install step | `wsl/install.sh` |
 | npm global tool | `packages/npm-global.txt` |
-| Container apt/tool | `devcontainers/general/.devcontainer/Dockerfile` |
+| Container tool or package | `devcontainers/general/.devcontainer/Dockerfile` |
 | Container post-create step | `devcontainers/general/.devcontainer/post-create.sh` |
-| Host/network fix | `wsl/README.md` |
-| Secret/token | Document the required variable — never commit the value |
+| Host or network fix | `wsl/README.md` |
+| Secret or token | Document the required variable — never commit the value |

@@ -16,11 +16,7 @@ if [[ -f "$NPM_LIST" ]]; then
   fi
 fi
 
-# ── Git identity (inherited from host via devcontainer gitconfig mount) ───────
-# VS Code devcontainers mount ~/.gitconfig automatically.
-# Run gh auth setup-git manually after first open if HTTPS auth is needed.
-
-# ── Shell comfort ─────────────────────────────────────────────────────────────
+# ── Shell config ──────────────────────────────────────────────────────────────
 SOURCE_LINE="source \"$INFRA_DIR/wsl/shell/bashrc.sh\""
 if [[ -f "$INFRA_DIR/wsl/shell/bashrc.sh" ]] && ! grep -qF "$SOURCE_LINE" "$HOME/.bashrc"; then
   printf '\n%s\n' "$SOURCE_LINE" >> "$HOME/.bashrc"

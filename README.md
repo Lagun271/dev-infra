@@ -14,16 +14,16 @@ Keeping the WSL host minimal means the container carries everything needed for d
 
 ## Fresh WSL setup
 
-From PowerShell on the Windows host:
+**Step 1 — Install the distro** (PowerShell on the Windows host):
 
 ```powershell
 wsl --install -d Ubuntu-24.04
 ```
 
-Then inside WSL:
+**Step 2 — Run the bootstrap** (inside the WSL shell, not PowerShell — `curl` in PowerShell is an alias for `Invoke-WebRequest` and will not work):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SkogisStrana/dev-infra/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Lagun271/dev-infra/main/bootstrap.sh | bash
 ```
 
 The bootstrap installs `gh`, authenticates with GitHub, clones this repo, then runs `wsl/install.sh` to apply the full baseline.

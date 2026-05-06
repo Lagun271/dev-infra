@@ -24,6 +24,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     yamllint \
   && rm -rf /var/lib/apt/lists/*
 
+# ── Node.js (LTS via NodeSource) ──────────────────────────────────────────────
+ARG NODE_VERSION=22
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
+  && apt-get install -y nodejs \
+  && rm -rf /var/lib/apt/lists/*
+
 # ── .NET SDK ──────────────────────────────────────────────────────────────────
 ARG DOTNET_VERSION=9.0
 RUN curl -fsSL https://dot.net/v1/dotnet-install.sh | bash -s -- \
@@ -64,20 +70,5 @@ RUN groupadd --gid "${USER_GID}" "${USERNAME}" \
   && usermod -aG docker "${USERNAME}" 2>/dev/null || true
 
 USER ${USERNAME}
-
-# ── nvm + Node ────────────────────────────────────────────────────────────────
-# nvm is user-level and must be installed after switching to the dev user.
-# Symlinks into /usr/local/bin make node/npm/npx available to non-interactive
-# shells (scripts, VS Code tasks) without sourcing nvm.sh first.
-ARG NODE_VERSION=22
-ENV NVM_DIR="/home/${USERNAME}/.nvm"
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
-  && . "$NVM_DIR/nvm.sh" \
-  && nvm install "${NODE_VERSION}" \
-  && nvm alias default "${NODE_VERSION}" \
-  && node_bin="$(ls -d "$NVM_DIR/versions/node"/v*)/bin" \
-  && sudo ln -sf "$node_bin/node" /usr/local/bin/node \
-  && sudo ln -sf "$node_bin/npm"  /usr/local/bin/npm \
-  && sudo ln -sf "$node_bin/npx"  /usr/local/bin/npx
 
 ENV PATH="/home/${USERNAME}/.local/bin:/home/${USERNAME}/.dotnet/tools:${PATH}"

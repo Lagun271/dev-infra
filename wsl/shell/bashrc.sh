@@ -30,9 +30,3 @@ fi
 if command -v gh &>/dev/null; then
   eval "$(gh completion -s bash 2>/dev/null || true)"
 fi
-
-# nvm — enables `nvm use`, `nvm install`, etc. in interactive shells
-# node/npm/npx are also available via /usr/local/bin symlinks for non-interactive use
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ]          && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"

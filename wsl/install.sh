@@ -24,6 +24,21 @@ if [[ ! -s "$HOME/.nvm/nvm.sh" ]]; then
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 fi
 
+# Install global npm packages from npm-host.txt
+# shellcheck source=/dev/null
+. "$HOME/.nvm/nvm.sh"
+if ! nvm which current &>/dev/null; then
+  echo "==> Installing default Node via nvm"
+  nvm install --lts
+  nvm alias default lts/*
+fi
+echo "==> Installing host npm packages"
+NPM_PACKAGES=$(grep -v '^\s*#' "$SCRIPT_DIR/../packages/npm-host.txt" | grep -v '^\s*$')
+if [[ -n "$NPM_PACKAGES" ]]; then
+  # shellcheck disable=SC2086
+  npm install -g $NPM_PACKAGES
+fi
+
 # Wire shell config via a single source line — changes to bashrc.sh take effect
 # on the next shell open with no further edits to ~/.bashrc needed.
 SOURCE_LINE="source \"$SCRIPT_DIR/shell/bashrc.sh\""

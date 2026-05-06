@@ -1,9 +1,5 @@
 # Global npm packages installed in the devcontainer.
-# install.sh reads this file; one package per line.
-# Specify a pinned version with @version when stability matters.
+# post-create.sh reads this file; one package per line.
 # Lines starting with # are ignored.
 
-@bitwarden/cli
-@mariozechner/pi-coding-agent
-pi-mcp-adapter
 workflow-extension

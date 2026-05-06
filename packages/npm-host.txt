@@ -1,0 +1,12 @@
+# Global npm packages installed on the WSL host.
+# These are environment-level tools used across projects, not project tooling.
+# wsl/install.sh reads this file after nvm is available.
+# Lines starting with # are ignored.
+
+# Coding agents — run from the WSL host, manage projects and containers
+@anthropic-ai/claude-code
+@mariozechner/pi-coding-agent
+pi-mcp-adapter
+
+# Password manager CLI
+@bitwarden/cli

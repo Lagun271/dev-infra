@@ -17,7 +17,7 @@ Keeping the WSL host minimal means the container carries everything needed for d
 **Step 1 — Install the distro** (PowerShell on the Windows host):
 
 ```powershell
-wsl --install -d Ubuntu-24.04
+wsl --install -d Ubuntu-26.04
 ```
 
 **Step 2 — Run the bootstrap** (inside the WSL shell, not PowerShell — `curl` in PowerShell is an alias for `Invoke-WebRequest` and will not work):

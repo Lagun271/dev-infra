@@ -47,6 +47,24 @@ if ! grep -qF "$SOURCE_LINE" "$HOME/.bashrc"; then
   printf '\n%s\n' "$SOURCE_LINE" >> "$HOME/.bashrc"
 fi
 
+# Configure git identity from GitHub account if not already set
+if ! git config --global user.email &>/dev/null; then
+  echo "==> Configuring git identity from GitHub account"
+  GH_USER=$(gh api user)
+  GH_ID=$(echo "$GH_USER" | jq -r '.id')
+  GH_LOGIN=$(echo "$GH_USER" | jq -r '.login')
+  GH_NAME=$(echo "$GH_USER" | jq -r '.name // .login')
+  GH_EMAIL="${GH_ID}+${GH_LOGIN}@users.noreply.github.com"
+  git config --global user.email "$GH_EMAIL"
+  git config --global user.name "$GH_NAME"
+fi
+
+# Configure Bitwarden CLI to use EU server
+if command -v bw &>/dev/null; then
+  echo "==> Configuring Bitwarden CLI to use EU server"
+  bw config server https://vault.bitwarden.eu
+fi
+
 echo ""
 echo "==> WSL baseline installed."
 echo "    Open a new shell or run: source ~/.bashrc"

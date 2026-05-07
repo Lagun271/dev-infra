@@ -54,7 +54,8 @@ if ! git config --global user.email &>/dev/null; then
   GH_ID=$(echo "$GH_USER" | jq -r '.id')
   GH_LOGIN=$(echo "$GH_USER" | jq -r '.login')
   GH_NAME=$(echo "$GH_USER" | jq -r '.name // .login')
-  GH_EMAIL="${GH_ID}+${GH_LOGIN}@users.noreply.github.com"
+  GH_EMAIL=$(echo "$GH_USER" | jq -r '.email // empty')
+  GH_EMAIL="${GH_EMAIL:-${GH_ID}+${GH_LOGIN}@users.noreply.github.com}"
   git config --global user.email "$GH_EMAIL"
   git config --global user.name "$GH_NAME"
 fi

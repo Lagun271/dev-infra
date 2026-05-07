@@ -7,8 +7,10 @@ gh
 
 # Core utilities
 curl
+fd-find
 gnupg
 jq
+ripgrep
 wget
 
 # Docker access (socket passthrough from Docker Desktop or native dockerd)

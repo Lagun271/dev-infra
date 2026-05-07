@@ -12,6 +12,16 @@ Personal development environment definitions for Windows + WSL 2 + devcontainers
 
 Keeping the WSL host minimal means the container carries everything needed for development and can be rebuilt cleanly at any time.
 
+## Fresh Windows setup
+
+Run from PowerShell:
+
+```powershell
+PowerShell -ExecutionPolicy Bypass -File .\windows\install.ps1
+```
+
+The `-ExecutionPolicy Bypass` flag is required because scripts on UNC paths (e.g. cloned into a WSL filesystem) are treated as remote and blocked by default. UAC dialogs may appear when winget installs packages that require elevation.
+
 ## Fresh WSL setup
 
 **Step 1 — Install the distro** (PowerShell on the Windows host):
@@ -32,6 +42,9 @@ The bootstrap installs `gh`, authenticates with GitHub, clones this repo, then r
 
 ```
 bootstrap.sh                        # curl-pipeable entry point for a fresh distro
+windows/
+  install.ps1                       # Windows baseline installer
+  winget.json                       # winget package list
 wsl/
   apt.txt                           # WSL host packages
   install.sh                        # idempotent baseline installer
@@ -56,6 +69,7 @@ Manual installs are fine for experiments. Durable changes belong in this repo:
 
 | What | Where |
 |---|---|
+| Windows apps | `windows/winget.json` |
 | WSL apt package | `wsl/apt.txt` |
 | WSL shell config | `wsl/shell/bashrc.sh` |
 | WSL install step | `wsl/install.sh` |

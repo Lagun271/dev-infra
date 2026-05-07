@@ -56,6 +56,9 @@ if ! grep -qF "$SOURCE_LINE" "$HOME/.bashrc"; then
   printf '\n%s\n' "$SOURCE_LINE" >> "$HOME/.bashrc"
 fi
 
+# Wire gh as git credential helper so pushes work without manual auth
+gh auth setup-git
+
 # Configure git identity from GitHub account if not already set
 if ! git config --global user.email &>/dev/null; then
   echo "==> Configuring git identity from GitHub account"

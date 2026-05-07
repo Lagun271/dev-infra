@@ -20,6 +20,7 @@ check() {
 echo "=== WSL host tools ==="
 check git        git --version
 check gh         gh --version
+check gcloud     gcloud --version
 check docker     docker --version
 check curl       curl --version
 check jq         jq --version

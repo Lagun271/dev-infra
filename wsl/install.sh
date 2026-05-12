@@ -72,6 +72,23 @@ if ! git config --global user.email &>/dev/null; then
   git config --global user.name "$GH_NAME"
 fi
 
+# Install Claude Code plugins from claude-plugins.txt
+if command -v claude &>/dev/null; then
+  echo "==> Installing Claude Code plugins"
+  # Add wshobson/agents marketplace if not already present
+  if ! claude plugin marketplace list 2>/dev/null | grep -q 'claude-code-workflows'; then
+    claude plugin marketplace add wshobson/agents
+  fi
+  CLAUDE_PLUGINS=$(grep -v '^\s*#' "$SCRIPT_DIR/../packages/claude-plugins.txt" | grep -v '^\s*$')
+  INSTALLED=$(claude plugin list 2>/dev/null || true)
+  while IFS= read -r plugin; do
+    plugin_name="${plugin%%@*}"
+    if ! echo "$INSTALLED" | grep -q "$plugin_name"; then
+      claude plugin install "$plugin"
+    fi
+  done <<< "$CLAUDE_PLUGINS"
+fi
+
 # Configure Bitwarden CLI to use EU server
 if command -v bw &>/dev/null; then
   echo "==> Configuring Bitwarden CLI to use EU server"

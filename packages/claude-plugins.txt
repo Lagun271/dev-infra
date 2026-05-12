@@ -1,0 +1,8 @@
+# Claude Code plugins — installed via wsl/install.sh
+# Format: plugin-name@marketplace-name
+# Marketplace added automatically: wshobson/agents → claude-code-workflows
+
+python-development@claude-code-workflows
+debugging-toolkit@claude-code-workflows
+git-pr-workflows@claude-code-workflows
+shell-scripting@claude-code-workflows

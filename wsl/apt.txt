@@ -12,6 +12,7 @@ gnupg
 jq
 mosquitto-clients
 ripgrep
+tmux
 wget
 
 # Docker access (socket passthrough from Docker Desktop or native dockerd)

@@ -31,6 +31,13 @@ if command -v gh &>/dev/null; then
   eval "$(gh completion -s bash 2>/dev/null || true)"
 fi
 
+# VS Code (installed on Windows; expose `code` CLI in WSL)
+if [[ -n "${USERPROFILE:-}" ]]; then
+  _VSCODE_BIN="$(wslpath "$USERPROFILE")/AppData/Local/Programs/Microsoft VS Code/bin"
+  [[ -d "$_VSCODE_BIN" ]] && export PATH="$_VSCODE_BIN:$PATH"
+  unset _VSCODE_BIN
+fi
+
 # nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ]          && \. "$NVM_DIR/nvm.sh"

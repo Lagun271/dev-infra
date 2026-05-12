@@ -3,6 +3,11 @@
 # Idempotent — safe to re-run after adding packages to apt.txt.
 set -euo pipefail
 
+if ! grep -qi microsoft /proc/version 2>/dev/null; then
+  echo "This installer is intended for WSL only." >&2
+  exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Add Google Cloud apt repo if not already present
@@ -93,6 +98,21 @@ fi
 if command -v bw &>/dev/null; then
   echo "==> Configuring Bitwarden CLI to use EU server"
   bw config server https://vault.bitwarden.eu
+fi
+
+# Install Claude Code on the Windows host so the Remote Control feature works
+# (lets you dispatch and monitor sessions from your phone or browser).
+# Auth and enabling Remote Control (/config) must be done manually afterward.
+# Runs powershell.exe from WSL — intentionally mutates the Windows host.
+WIN_HOME=$(powershell.exe -NoProfile -Command '$env:USERPROFILE' | tr -d '\r\n')
+WIN_CLAUDE=$(wslpath "$WIN_HOME/.local/bin/claude.exe" 2>/dev/null || true)
+if [[ -n "$WIN_CLAUDE" && ! -f "$WIN_CLAUDE" ]]; then
+  echo "==> Installing Claude Code on Windows host"
+  powershell.exe -NoProfile -Command "irm https://claude.ai/install.ps1 | iex"
+  echo "    NOTE: open a new PowerShell window, run 'claude' to authenticate,"
+  echo "    then enable Remote Control via /config inside Claude Code."
+else
+  echo "==> Claude Code already installed on Windows host, skipping"
 fi
 
 echo ""

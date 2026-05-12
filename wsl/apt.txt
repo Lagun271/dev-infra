@@ -10,6 +10,7 @@ curl
 fd-find
 gnupg
 jq
+mosquitto-clients
 ripgrep
 wget
 

@@ -1,5 +1,8 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu-26.04
 
+# Prefer IPv4 over IPv6 to avoid network reachability issues in environments with no IPv6 routing
+RUN if [ -f /etc/gai.conf ]; then echo "precedence ::ffff:0:0/96 100" >> /etc/gai.conf; fi
+
 # ── System packages ───────────────────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Build essentials

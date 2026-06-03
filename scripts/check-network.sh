@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Verify basic network connectivity from WSL: DNS, HTTPS, GitHub, Docker Hub.
+# Configured to prefer IPv4 over IPv6 in /etc/gai.conf to prevent unreachable routing.
 set -uo pipefail
 
 PASS=0

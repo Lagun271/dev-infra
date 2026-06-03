@@ -77,6 +77,12 @@ if ! git config --global user.email &>/dev/null; then
   git config --global user.name "$GH_NAME"
 fi
 
+# Install Antigravity CLI if not present
+if [[ ! -x "$HOME/.local/bin/agy" ]]; then
+  echo "==> Installing Antigravity CLI"
+  curl -fsSL https://antigravity.google/cli/install.sh | bash
+fi
+
 # Install Claude Code plugins from claude-plugins.txt
 if command -v claude &>/dev/null; then
   echo "==> Installing Claude Code plugins"

@@ -19,6 +19,10 @@ alias gc='git commit'
 alias gp='git push'
 alias gpl='git pull'
 
+# Force Go binaries to use the cgo resolver so they respect /etc/gai.conf's IPv4 preference.
+# Pure-Go resolver bypasses gai.conf and tries IPv6 first, which is unreachable on this network.
+export GODEBUG=netdns=cgo
+
 # Docker: prefer Docker Desktop socket if available, fall back to native
 if [[ -S /var/run/docker-desktop.sock ]]; then
   export DOCKER_HOST="unix:///var/run/docker-desktop.sock"

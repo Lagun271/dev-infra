@@ -6,7 +6,7 @@ Personal development environment definitions for Windows + WSL 2 + devcontainers
 
 | Layer | Responsibility |
 |---|---|
-| Windows host | RobotStudio, GUI apps, Docker Desktop |
+| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop |
 | WSL host | Git, GitHub CLI, Docker socket access, minimal shell |
 | Devcontainer | All development tooling, CLIs, coding agents |
 
@@ -20,7 +20,9 @@ Run from PowerShell:
 PowerShell -ExecutionPolicy Bypass -File .\windows\install.ps1
 ```
 
-The `-ExecutionPolicy Bypass` flag is required because scripts on UNC paths (e.g. cloned into a WSL filesystem) are treated as remote and blocked by default. UAC dialogs may appear when winget installs packages that require elevation.
+The `-ExecutionPolicy Bypass` flag is required because scripts on UNC paths (e.g. cloned into a WSL filesystem) are treated as remote and blocked by default. The script asks for elevation once (a single UAC prompt), copies itself to `C:\ProgramData\dev-infra\windows`, and runs the rest unattended in an administrator window.
+
+Visual Studio 2026 (Community) is installed by a separate step in `install.ps1`, because `winget import` can't pass installer options. Its workloads come from `windows/vs2026.vsconfig`. On first run the script installs VS with that config. On later runs it re-applies the config with the VS Installer's `modify` command, so workloads added to the file get installed. Workloads removed from the file stay installed: the VS Installer adds components from a `.vsconfig` but never removes them. To get component IDs from an existing install, open VS Installer → More → Export configuration.
 
 ## Fresh WSL setup
 
@@ -45,6 +47,7 @@ bootstrap.sh                        # curl-pipeable entry point for a fresh dist
 windows/
   install.ps1                       # Windows baseline installer
   winget.json                       # winget package list
+  vs2026.vsconfig                   # Visual Studio 2026 workloads/components
 wsl/
   apt.txt                           # WSL host packages
   install.sh                        # idempotent baseline installer
@@ -70,6 +73,7 @@ Manual installs are fine for experiments. Durable changes belong in this repo:
 | What | Where |
 |---|---|
 | Windows apps | `windows/winget.json` |
+| Visual Studio workload or component | `windows/vs2026.vsconfig` |
 | WSL apt package | `wsl/apt.txt` |
 | WSL shell config | `wsl/shell/bashrc.sh` |
 | WSL install step | `wsl/install.sh` |

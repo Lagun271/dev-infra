@@ -24,6 +24,7 @@ check gcloud     gcloud --version
 check docker     docker --version
 check curl       curl --version
 check jq         jq --version
+check sox        sox --version
 
 echo ""
 echo "=== Container / dev tools (run inside devcontainer) ==="

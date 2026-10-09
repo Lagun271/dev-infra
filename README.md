@@ -61,6 +61,7 @@ devcontainers/
       post-create.sh
 packages/
   npm-global.txt                    # global npm tools installed in the container
+  dotnet-tool-windows.txt           # .NET global tools installed on the Windows host
 scripts/
   check-tools.sh                    # verify expected tools are present
   check-network.sh                  # verify DNS, HTTPS, and Docker socket
@@ -78,6 +79,7 @@ Manual installs are fine for experiments. Durable changes belong in this repo:
 | WSL shell config | `wsl/shell/bashrc.sh` |
 | WSL install step | `wsl/install.sh` |
 | npm global tool | `packages/npm-global.txt` |
+| .NET global tool on Windows (e.g. ilspycmd) | `packages/dotnet-tool-windows.txt` |
 | Container tool or package | `devcontainers/general/.devcontainer/Dockerfile` |
 | Container post-create step | `devcontainers/general/.devcontainer/post-create.sh` |
 | Host or network fix | `wsl/README.md` |

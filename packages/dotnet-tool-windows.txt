@@ -1,0 +1,8 @@
+# .NET global tools installed on the Windows host.
+# windows/install.ps1 reads this file (after Visual Studio provides the .NET SDK)
+# and runs `dotnet tool update -g <name>` for each line - installs if missing,
+# updates if already present. Lines starting with # are ignored.
+
+# ILSpy CLI - decompile .NET assemblies. Prefer this over ildasm.exe for
+# inspecting third-party/reference assemblies during migration work.
+ilspycmd

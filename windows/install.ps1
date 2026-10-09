@@ -18,6 +18,7 @@ if (-not $Elevated) {
     # config path without spaces.
     New-Item -ItemType Directory -Force -Path $stageDir | Out-Null
     Copy-Item -Force -Path "$scriptDir\*" -Destination $stageDir
+    Copy-Item -Force -Path (Join-Path $scriptDir '..\packages\dotnet-tool-windows.txt') -Destination $stageDir
 
     Write-Host "==> Elevating once; installation continues in an administrator window."
     $proc = Start-Process -FilePath 'powershell.exe' -Verb RunAs -Wait -PassThru -ArgumentList `
@@ -67,6 +68,25 @@ try {
             "modify --installPath `"$vsPath`" --config `"$vsConfig`" --includeRecommended --quiet --norestart"
         if ($proc.ExitCode -ne 0 -and $proc.ExitCode -ne 3010) {
             throw "Visual Studio modify failed (exit code $($proc.ExitCode))"
+        }
+    }
+
+    # .NET global tools, e.g. ilspycmd (ILSpy CLI). Runs after Visual Studio so the
+    # .NET SDK it provides is on PATH. `dotnet tool update -g` installs a tool that
+    # isn't present yet and updates one that is, so this step is idempotent.
+    $toolsFile = Join-Path $scriptDir 'dotnet-tool-windows.txt'
+    if (Test-Path $toolsFile) {
+        Write-Host ""
+        Write-Host "==> Installing .NET global tools from packages/dotnet-tool-windows.txt"
+        Get-Content $toolsFile | ForEach-Object {
+            $tool = $_.Trim()
+            if ($tool -and -not $tool.StartsWith('#')) {
+                Write-Host "    - $tool"
+                dotnet tool update -g $tool
+                if ($LASTEXITCODE -ne 0) {
+                    throw "dotnet tool update -g $tool failed (exit code $LASTEXITCODE)"
+                }
+            }
         }
     }
 } catch {

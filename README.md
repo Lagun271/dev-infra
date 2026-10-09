@@ -6,7 +6,7 @@ Personal development environment definitions for Windows + WSL 2 + devcontainers
 
 | Layer | Responsibility |
 |---|---|
-| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop |
+| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop, Antigravity CLI |
 | WSL host | Git, GitHub CLI, Docker socket access, minimal shell |
 | Devcontainer | All development tooling, CLIs, coding agents |
 

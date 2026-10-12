@@ -24,6 +24,19 @@ The `-ExecutionPolicy Bypass` flag is required because scripts on UNC paths (e.g
 
 Visual Studio 2026 (Community) is installed by a separate step in `install.ps1`, because `winget import` can't pass installer options. Its workloads come from `windows/vs2026.vsconfig`. On first run the script installs VS with that config. On later runs it re-applies the config with the VS Installer's `modify` command, so workloads added to the file get installed. Workloads removed from the file stay installed: the VS Installer adds components from a `.vsconfig` but never removes them. To get component IDs from an existing install, open VS Installer → More → Export configuration.
 
+### .NET debugging from Claude Code (ClrVoyant)
+
+`install.ps1` installs the ClrVoyant MCP server (`packages/dotnet-tool-windows.txt`) and a pinned netcoredbg (`windows/install-netcoredbg.ps1`). ClrVoyant's bundled netcoredbg is too old: its call stacks fail with `0x80004002` through native frames, e.g. in WinForms event handlers or RobotStudio add-ins ([Samsung/netcoredbg#215](https://github.com/Samsung/netcoredbg/issues/215)). Register it once per machine, pointing at the pinned netcoredbg:
+
+```powershell
+claude mcp add clrvoyant --scope user --transport stdio `
+  --env DOTNET_ROLL_FORWARD=Major `
+  --env "CLRVOYANT_NETCOREDBG=$env:LOCALAPPDATA\Programs\netcoredbg\3.2.0-1092\netcoredbg.exe" `
+  -- "$env:USERPROFILE\.dotnet\tools\clrvoyant.exe"
+```
+
+The name goes first because `--env` takes every following argument up to the next option. `DOTNET_ROLL_FORWARD=Major` lets the net8.0 tool run when only a newer .NET runtime is installed. Drop `CLRVOYANT_NETCOREDBG` once ClrVoyant bundles netcoredbg 3.2.0-1092 or later.
+
 ## Fresh WSL setup
 
 **Step 1 — Install the distro** (PowerShell on the Windows host):
@@ -46,6 +59,7 @@ The bootstrap installs `gh`, authenticates with GitHub, clones this repo, then r
 bootstrap.sh                        # curl-pipeable entry point for a fresh distro
 windows/
   install.ps1                       # Windows baseline installer
+  install-netcoredbg.ps1            # pinned netcoredbg from its GitHub release
   winget.json                       # winget package list
   vs2026.vsconfig                   # Visual Studio 2026 workloads/components
 wsl/
@@ -80,6 +94,7 @@ Manual installs are fine for experiments. Durable changes belong in this repo:
 | WSL install step | `wsl/install.sh` |
 | npm global tool | `packages/npm-global.txt` |
 | .NET global tool on Windows (e.g. ilspycmd) | `packages/dotnet-tool-windows.txt` |
+| Windows binary not on winget, or too old there | Its own pinned, checksum-verified script in `windows/` (e.g. `install-netcoredbg.ps1`) |
 | Container tool or package | `devcontainers/general/.devcontainer/Dockerfile` |
 | Container post-create step | `devcontainers/general/.devcontainer/post-create.sh` |
 | Host or network fix | `wsl/README.md` |

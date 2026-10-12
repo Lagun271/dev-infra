@@ -1,8 +1,16 @@
 # .NET global tools installed on the Windows host.
 # windows/install.ps1 reads this file (after Visual Studio provides the .NET SDK)
 # and runs `dotnet tool update -g <name>` for each line - installs if missing,
-# updates if already present. Lines starting with # are ignored.
+# updates if already present. `<name>@<version>` pins a version.
+# Lines starting with # are ignored.
 
 # ILSpy CLI - decompile .NET assemblies. Prefer this over ildasm.exe for
 # inspecting third-party/reference assemblies during migration work.
 ilspycmd
+
+# ClrVoyant - MCP server that lets Claude Code debug .NET 8+ processes
+# (attach, breakpoints, variables) through netcoredbg. Pinned: young project.
+# Its bundled netcoredbg (3.1.3-1062) cannot read call stacks through native
+# frames (Samsung/netcoredbg#215), so the MCP registration points
+# CLRVOYANT_NETCOREDBG at the newer one from windows/install-netcoredbg.ps1.
+ClrVoyant@0.2.0

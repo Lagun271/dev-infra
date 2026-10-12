@@ -89,6 +89,11 @@ try {
             }
         }
     }
+
+    # netcoredbg, pinned from its GitHub release (winget's version is too old for ClrVoyant).
+    Write-Host ""
+    Write-Host "==> Installing netcoredbg"
+    & (Join-Path $scriptDir 'install-netcoredbg.ps1')
 } catch {
     # The elevated window closes on exit - keep it open so the error can be read.
     Write-Host ""

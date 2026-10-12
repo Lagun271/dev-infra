@@ -15,6 +15,10 @@ ripgrep
 tmux
 wget
 
+# Audio recording for Claude Code /voice (records via WSLg PulseAudio)
+libsox-fmt-pulse
+sox
+
 # Docker access (socket passthrough from Docker Desktop or native dockerd)
 docker-buildx
 docker-compose-v2

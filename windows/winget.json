@@ -6,6 +6,7 @@
         { "PackageIdentifier": "Git.Git" },
         { "PackageIdentifier": "GitHub.cli" },
         { "PackageIdentifier": "Google.AntigravityCLI" },
+        { "PackageIdentifier": "Microsoft.PowerShell" },
         { "PackageIdentifier": "Microsoft.VisualStudioCode" }
       ],
       "SourceDetails": {

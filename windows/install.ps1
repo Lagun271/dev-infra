@@ -17,11 +17,12 @@ if (-not $Elevated) {
     # read a UNC path (repo cloned into WSL), and the VS installer needs a local
     # config path without spaces.
     New-Item -ItemType Directory -Force -Path $stageDir | Out-Null
-    Copy-Item -Force -Path "$scriptDir\*" -Destination $stageDir
+    Copy-Item -Recurse -Force -Path "$scriptDir\*" -Destination $stageDir
     Copy-Item -Force -Path (Join-Path $scriptDir '..\packages\dotnet-tool-windows.txt') -Destination $stageDir
 
     Write-Host "==> Elevating once; installation continues in an administrator window."
-    $proc = Start-Process -FilePath 'powershell.exe' -Verb RunAs -Wait -PassThru -ArgumentList `
+    $sysPowershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    $proc = Start-Process -FilePath $sysPowershell -Verb RunAs -Wait -PassThru -ArgumentList `
         "-NoProfile -ExecutionPolicy Bypass -File `"$stageDir\install.ps1`" -Elevated"
     if ($proc.ExitCode -ne 0) {
         throw "Elevated install failed (exit code $($proc.ExitCode))"
@@ -37,6 +38,49 @@ try {
     Write-Host "==> Installing Windows packages from winget.json"
     winget import -i "$scriptDir\winget.json" --accept-package-agreements --accept-source-agreements `
         --ignore-versions --disable-interactivity
+
+    # Configure PowerShell 7 (pwsh) as the default shell for terminals and coding agents:
+    # 1. Wire $HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 to source
+    #    $env:ProgramData\dev-infra\windows\shell\profile.ps1.
+    # 2. Set PowerShell 7 as the default profile in Windows Terminal and hide 5.1.
+    Write-Host ""
+    Write-Host "==> Configuring PowerShell 7 profile and Windows Terminal default"
+    $docsDir = [Environment]::GetFolderPath('MyDocuments')
+    $pwshProfileDir = Join-Path $docsDir 'PowerShell'
+    New-Item -ItemType Directory -Force -Path $pwshProfileDir | Out-Null
+    $pwshProfile = Join-Path $pwshProfileDir 'Microsoft.PowerShell_profile.ps1'
+    $sourceLine = '. "$env:ProgramData\dev-infra\windows\shell\profile.ps1"'
+    if (-not (Test-Path $pwshProfile)) {
+        Set-Content -Path $pwshProfile -Encoding UTF8 -Value $sourceLine
+    } elseif (-not (Select-String -Path $pwshProfile -SimpleMatch -Quiet $sourceLine)) {
+        Add-Content -Path $pwshProfile -Encoding UTF8 -Value "`r`n$sourceLine"
+    }
+
+    $wtSettings = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
+    if (Test-Path $wtSettings) {
+        $wtJson = Get-Content -Raw -Path $wtSettings | ConvertFrom-Json
+        $pwshGuid = '{574e775e-4f2a-5b96-ac1e-a2962a402336}'
+        $ps5Guid  = '{61c54bbd-c2c6-5271-96e7-009a87ff44bf}'
+        $wtJson.defaultProfile = $pwshGuid
+        $hasPwsh = $false
+        foreach ($p in $wtJson.profiles.list) {
+            if ($p.guid -eq $pwshGuid) {
+                $p.hidden = $false
+                $hasPwsh = $true
+            } elseif ($p.guid -eq $ps5Guid) {
+                $p.hidden = $true
+            }
+        }
+        if (-not $hasPwsh) {
+            $wtJson.profiles.list = @([pscustomobject]@{
+                guid   = $pwshGuid
+                name   = 'PowerShell'
+                source = 'Windows.Terminal.PowershellCore'
+                hidden = $false
+            }) + @($wtJson.profiles.list)
+        }
+        $wtJson | ConvertTo-Json -Depth 32 | Set-Content -Path $wtSettings -Encoding UTF8
+    }
 
     # Visual Studio 2026 is installed separately: winget import cannot pass installer
     # overrides, and the workload selection lives in vs2026.vsconfig.

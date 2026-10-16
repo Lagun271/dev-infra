@@ -6,7 +6,7 @@ Personal development environment definitions for Windows + WSL 2 + devcontainers
 
 | Layer | Responsibility |
 |---|---|
-| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop, Antigravity CLI |
+| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop, PowerShell 7 (`pwsh`), Antigravity CLI |
 | WSL host | Git, GitHub CLI, Docker socket access, minimal shell |
 | Devcontainer | All development tooling, CLIs, coding agents |
 
@@ -21,6 +21,15 @@ PowerShell -ExecutionPolicy Bypass -File .\windows\install.ps1
 ```
 
 The `-ExecutionPolicy Bypass` flag is required because scripts on UNC paths (e.g. cloned into a WSL filesystem) are treated as remote and blocked by default. The script asks for elevation once (a single UAC prompt), copies itself to `C:\ProgramData\dev-infra\windows`, and runs the rest unattended in an administrator window.
+
+### PowerShell 7 (`pwsh`) for terminals and coding agents
+
+`install.ps1` installs PowerShell 7 (`Microsoft.PowerShell` in `windows/winget.json`) and configures it so your terminals and coding agents use PowerShell 7 instead of Windows PowerShell 5.1:
+
+1. **Windows Terminal default**: Sets PowerShell 7 (`pwsh.exe`) as the `defaultProfile` in Windows Terminal and hides the legacy `Windows PowerShell` (5.1) entry from the tab menu.
+2. **PowerShell 7 profile (`windows/shell/profile.ps1`)**: Staged to `$env:ProgramData\dev-infra\windows\shell\profile.ps1` and sourced from `$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`. It aliases `powershell` and `powershell.exe` to `pwsh` inside interactive sessions.
+
+### Visual Studio 2026
 
 Visual Studio 2026 (Community) is installed by a separate step in `install.ps1`, because `winget import` can't pass installer options. Its workloads come from `windows/vs2026.vsconfig`. On first run the script installs VS with that config. On later runs it re-applies the config with the VS Installer's `modify` command, so workloads added to the file get installed. Workloads removed from the file stay installed: the VS Installer adds components from a `.vsconfig` but never removes them. To get component IDs from an existing install, open VS Installer → More → Export configuration.
 
@@ -60,6 +69,7 @@ bootstrap.sh                        # curl-pipeable entry point for a fresh dist
 windows/
   install.ps1                       # Windows baseline installer
   install-netcoredbg.ps1            # pinned netcoredbg from its GitHub release
+  shell/profile.ps1                 # PowerShell 7 profile config sourced by $PROFILE
   winget.json                       # winget package list
   vs2026.vsconfig                   # Visual Studio 2026 workloads/components
 wsl/
@@ -88,6 +98,7 @@ Manual installs are fine for experiments. Durable changes belong in this repo:
 | What | Where |
 |---|---|
 | Windows apps | `windows/winget.json` |
+| Windows PowerShell 7 profile config | `windows/shell/profile.ps1` |
 | Visual Studio workload or component | `windows/vs2026.vsconfig` |
 | WSL apt package | `wsl/apt.txt` |
 | WSL shell config | `wsl/shell/bashrc.sh` |

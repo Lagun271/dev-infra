@@ -6,11 +6,13 @@ Personal development environment definitions for Windows + WSL 2 + devcontainers
 
 | Layer | Responsibility |
 |---|---|
-| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop, PowerShell 7 (`pwsh`), Antigravity CLI |
+| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop, PowerShell 7 (`pwsh`), Antigravity CLI, Python + GNU Make (see note) |
 | WSL host | Git, GitHub CLI, Docker socket access, minimal shell |
 | Devcontainer | All development tooling, CLIs, coding agents |
 
 Keeping the WSL host minimal means the container carries everything needed for development and can be rebuilt cleanly at any time.
+
+**Exception — Python + Make on the Windows host:** repos that automate a Windows-only GUI app (e.g. RobotStudio) need their orchestration scripts (smoke tests, CLI wrappers) to call that app's binaries directly with native Windows paths. Running the orchestrator from WSL or a devcontainer means every path crossing that boundary needs translation (`wslpath`, UNC vs. drive-letter paths, etc.) — fragile, and easy to get wrong per-script rather than once. For those repos, install Python (`Python.Python.3.13`) and GNU Make (`ezwinports.make`) on the Windows host itself and run `make`/`python` natively there instead.
 
 ## Fresh Windows setup
 

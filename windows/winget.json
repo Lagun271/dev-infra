@@ -3,11 +3,13 @@
   "Sources": [
     {
       "Packages": [
+        { "PackageIdentifier": "ezwinports.make" },
         { "PackageIdentifier": "Git.Git" },
         { "PackageIdentifier": "GitHub.cli" },
         { "PackageIdentifier": "Google.AntigravityCLI" },
         { "PackageIdentifier": "Microsoft.PowerShell" },
-        { "PackageIdentifier": "Microsoft.VisualStudioCode" }
+        { "PackageIdentifier": "Microsoft.VisualStudioCode" },
+        { "PackageIdentifier": "Python.Python.3.13" }
       ],
       "SourceDetails": {
         "Argument": "https://cdn.winget.microsoft.com/cache",

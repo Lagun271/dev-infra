@@ -3,13 +3,13 @@
   "Sources": [
     {
       "Packages": [
+        { "PackageIdentifier": "astral-sh.uv" },
         { "PackageIdentifier": "ezwinports.make" },
         { "PackageIdentifier": "Git.Git" },
         { "PackageIdentifier": "GitHub.cli" },
         { "PackageIdentifier": "Google.AntigravityCLI" },
         { "PackageIdentifier": "Microsoft.PowerShell" },
-        { "PackageIdentifier": "Microsoft.VisualStudioCode" },
-        { "PackageIdentifier": "Python.Python.3.13" }
+        { "PackageIdentifier": "Microsoft.VisualStudioCode" }
       ],
       "SourceDetails": {
         "Argument": "https://cdn.winget.microsoft.com/cache",

@@ -3,6 +3,8 @@
   "Sources": [
     {
       "Packages": [
+        { "PackageIdentifier": "astral-sh.uv" },
+        { "PackageIdentifier": "ezwinports.make" },
         { "PackageIdentifier": "Git.Git" },
         { "PackageIdentifier": "GitHub.cli" },
         { "PackageIdentifier": "Google.AntigravityCLI" },

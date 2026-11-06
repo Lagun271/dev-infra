@@ -26,3 +26,6 @@ docker.io
 
 # Google Cloud CLI (repo added by install.sh)
 google-cloud-cli
+
+# Azure CLI (repo added by install.sh)
+azure-cli

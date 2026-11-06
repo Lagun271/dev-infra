@@ -29,6 +29,17 @@ if [[ ! -f /etc/apt/sources.list.d/google-cloud-sdk.list ]]; then
     | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list > /dev/null
 fi
 
+# Add Microsoft Azure CLI apt repo if not already present
+if [[ ! -f /etc/apt/sources.list.d/azure-cli.list ]]; then
+  echo "==> Adding Microsoft Azure CLI apt repository"
+  sudo mkdir -p /etc/apt/keyrings
+  curl -sLS https://packages.microsoft.com/keys/microsoft.asc \
+    | gpg --dearmor | sudo tee /etc/apt/keyrings/microsoft.gpg > /dev/null
+  AZ_DIST=$(lsb_release -cs)
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ $AZ_DIST main" \
+    | sudo tee /etc/apt/sources.list.d/azure-cli.list > /dev/null
+fi
+
 echo "==> Installing WSL apt packages from apt.txt"
 PACKAGES=$(grep -v '^\s*#' "$SCRIPT_DIR/apt.txt" | grep -v '^\s*$')
 sudo apt-get update -qq

@@ -104,6 +104,16 @@ if [[ ! -x "$HOME/.local/bin/agy" ]]; then
   curl -fsSL https://antigravity.google/cli/install.sh | bash
 fi
 
+# Install Claude Code via the native installer. The npm package
+# (@anthropic-ai/claude-code) is only a wrapper whose postinstall downloads the
+# native binary; this host's npm blocks install scripts, so that postinstall
+# never runs. The native installer updates itself, so only install if missing.
+if [[ ! -x "$HOME/.local/bin/claude" ]]; then
+  echo "==> Installing Claude Code"
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
+export PATH="$HOME/.local/bin:$PATH"
+
 # Install Claude Code plugins from claude-plugins.txt
 if command -v claude &>/dev/null; then
   echo "==> Installing Claude Code plugins"
@@ -127,20 +137,7 @@ if command -v bw &>/dev/null; then
   bw config server https://vault.bitwarden.eu
 fi
 
-# Install Claude Code on the Windows host so the Remote Control feature works
-# (lets you dispatch and monitor sessions from your phone or browser).
-# Auth and enabling Remote Control (/config) must be done manually afterward.
-# Runs powershell.exe from WSL — intentionally mutates the Windows host.
-WIN_HOME=$(powershell.exe -NoProfile -Command '$env:USERPROFILE' | tr -d '\r\n')
-WIN_CLAUDE=$(wslpath "$WIN_HOME/.local/bin/claude.exe" 2>/dev/null || true)
-if [[ -n "$WIN_CLAUDE" && ! -f "$WIN_CLAUDE" ]]; then
-  echo "==> Installing Claude Code on Windows host"
-  powershell.exe -NoProfile -Command "irm https://claude.ai/install.ps1 | iex"
-  echo "    NOTE: open a new PowerShell window, run 'claude' to authenticate,"
-  echo "    then enable Remote Control via /config inside Claude Code."
-else
-  echo "==> Claude Code already installed on Windows host, skipping"
-fi
+# Claude Code on the Windows host is installed from windows/install.ps1, not from WSL.
 
 echo ""
 echo "==> WSL baseline installed."

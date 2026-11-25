@@ -27,6 +27,18 @@ if (-not $Elevated) {
     if ($proc.ExitCode -ne 0) {
         throw "Elevated install failed (exit code $($proc.ExitCode))"
     }
+
+    # Claude Code's native installer installs per-user into %USERPROFILE%\.local\bin,
+    # so it must run here, not in the elevated window above.
+    $claudeExe = Join-Path $env:USERPROFILE '.local\bin\claude.exe'
+    if (-not (Test-Path $claudeExe)) {
+        Write-Host ""
+        Write-Host "==> Installing Claude Code"
+        & { Set-StrictMode -Off; Invoke-RestMethod https://claude.ai/install.ps1 | Invoke-Expression }
+        Write-Host "    NOTE: open a new PowerShell window, run 'claude' to authenticate,"
+        Write-Host "    then enable Remote Control via /config inside Claude Code."
+    }
+
     Write-Host ""
     Write-Host "==> Windows baseline installed."
     Write-Host "    Restart your terminal for PATH changes to take effect."

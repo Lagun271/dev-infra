@@ -6,7 +6,7 @@ Personal development environment definitions for Windows + WSL 2 + devcontainers
 
 | Layer | Responsibility |
 |---|---|
-| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop, PowerShell 7 (`pwsh`), Antigravity CLI, `uv` + GNU Make (see note) |
+| Windows host | RobotStudio, Visual Studio, GUI apps, Docker Desktop, PowerShell 7 (`pwsh`), Antigravity CLI, `uv` + GNU Make (see note), Claude Code (native installer) |
 | WSL host | Git, GitHub CLI, Docker socket access, minimal shell |
 | Devcontainer | All development tooling, CLIs, coding agents |
 
@@ -62,7 +62,7 @@ wsl --install -d Ubuntu-26.04
 curl -fsSL https://raw.githubusercontent.com/Lagun271/dev-infra/main/bootstrap.sh | bash
 ```
 
-The bootstrap installs `gh`, authenticates with GitHub, clones this repo, then runs `wsl/install.sh` to apply the full baseline.
+The bootstrap installs `gh`, authenticates with GitHub, clones this repo, then runs `wsl/install.sh` to apply the full baseline. `wsl/install.sh` installs Claude Code via its native installer (`curl -fsSL https://claude.ai/install.sh | bash`) rather than the npm package, since this host's npm blocks install scripts and the npm package relies on one to download the native binary.
 
 ## Repo structure
 

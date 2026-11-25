@@ -4,7 +4,6 @@
 # Lines starting with # are ignored.
 
 # Coding agents — run from the WSL host, manage projects and containers
-@anthropic-ai/claude-code
 @mariozechner/pi-coding-agent
 pi-mcp-adapter
 

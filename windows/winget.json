@@ -8,6 +8,7 @@
         { "PackageIdentifier": "Git.Git" },
         { "PackageIdentifier": "GitHub.cli" },
         { "PackageIdentifier": "Google.AntigravityCLI" },
+        { "PackageIdentifier": "Gyan.FFmpeg" },
         { "PackageIdentifier": "Microsoft.PowerShell" },
         { "PackageIdentifier": "Microsoft.VisualStudioCode" }
       ],
